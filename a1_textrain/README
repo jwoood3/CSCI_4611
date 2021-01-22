@@ -1,0 +1,44 @@
+Jeremy Wood
+
+For Q1, I did (column + inputImg.width * row) because if you have a 4x4 pixel image for instance and want the pixel at (1, 1),
+if indexing starts at 0, that pixel will be pixel 5. Since the width is 4, you will get (1 + 4 * 1) = 5.
+
+For Q2, I started with checking if the brightness of the pixel is lower than the threshold. If it is, then we know that the
+pixel is dark enough that it should be set to black. If it is above the threshold, then we know that it is light enough to
+be set to white.
+
+Notes for the assignment:
+
+I decided to use a class called Letters to represent the letters that were to fall down the screen. This class contained the
+attributes of the actual letter, the x position, y position, and velocity. Initially, I was going to have 4 arrays all of the 
+same size to store these values, but that seemed like a weird way to do it so I created the class.
+
+The function that did much of the "heavy lifting" was the function "PrintLetterArray()". This was called in the draw method so
+it would continuously be called. I used a for loop to loop through each index of the LetterArray, and for each index, the 
+letter would be printed to the screen and then the rest of the logic would follow. To determine if the letter should move down
+the screen or be pushed up by an object, its location was converted to an index in the pixels[] array to get the grayscale 
+value. If the grayscale value is greater than the threshold, the letter moves down by its velocity, if the grayscale value is 
+less than the threshold, the letter either rests on top of whatever object it is on, or gets pushed up if the object moves up.
+
+If a letter moving down the screen would cause it to go past the bottom of the screen, it "wraps around" back to the top by the
+"LetterWrapAround()" function. This works by creating a new Letters object at the same index of the LetterArray and giving the 
+object a new letter, random x position and velocity, and resetting the y position to 1.
+
+The LetterArray is initialized in the setup function with CreateLetterArray(), so that it does not keep getting re-initialized 
+over and over each time the draw function repeats. The only time the LetterArray array has any of the Letters objects changed 
+is if LetterWrapAround() is called. CreateLetterArray also has the chance to put a word mixed in with the random letters. It 
+does this by picking a random number, and if that random number is equal to 3 (an arbitrary number within the range could have
+worked) and there is space for a word in letterArray, and a word hasn't been placed already, then a word will be placed. There
+are 5 possible words to be chosed from that are stored in an array of strings. Another random number is used to pick a word
+from the array of strings, and that string is then put into an array of chars where each letter is a char. These letters are 
+then placed on screen in a similar manner to the regular random letters, except the word letters are guaranteed to be next to
+each other in the proper order, and have their velocities picked from a smaller range of random numbers so that they are closer
+together. Once every letter in the word has been placed, a boolean "hasntOccurred" is set to false so that another word cannot
+be placed, and the rest of the letters will all be random ones. If a random word has been used, then the rest of the letters
+will have x locations chosen that are not overtop of the word. This is done to minimize the number of letters that can appear
+over the word. It cannot guarantee that no other letters will be overtop of the word because letters placed before the word was
+chosen could potentially have x locations overtop of it.
+
+The CreateText() method which is an internal method to the Letters class is used to print a letter to the screen and is called
+in PrintLetterArray() to update the letter on the screen.
+
